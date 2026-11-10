@@ -1,5 +1,5 @@
 body { font-family: system-ui, sans-serif; background: #f4f6f8; color: #1d2733; margin: 0; }
-main { max-width: 420px; margin: 3rem auto; padding: 0 1rem; }
+main { max-width: 520px; margin: 2rem auto; padding: 0 1rem; display: flex; flex-direction: column; gap: 1rem; }
 h1 { margin-bottom: 0; }
 .tagline { margin-top: 0.25rem; color: #5b6b7b; }
 .card { background: #fff; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,.1); display: flex; flex-direction: column; gap: 0.9rem; }
@@ -13,3 +13,22 @@ button.link { background: none; color: #1f6feb; padding: 0; text-decoration: und
 .field-error, .form-error { color: #c0392b; font-weight: 400; font-size: 0.85rem; margin: 0; }
 .switch { margin: 0; font-size: 0.9rem; }
 small { color: #5b6b7b; }
+select { padding: 0.55rem; border: 1px solid #b8c2cc; border-radius: 4px; font-size: 1rem; background: #fff; }
+select[aria-invalid="true"] { border-color: #c0392b; }
+button.secondary { background: #e8edf2; color: #1d2733; padding: 0.4rem 0.75rem; font-size: 0.9rem; }
+button.danger { background: #c0392b; padding: 0.4rem 0.75rem; font-size: 0.9rem; }
+.row { display: flex; gap: 0.5rem; }
+.row button[type="submit"] { flex: 1; }
+.topbar { display: flex; justify-content: space-between; align-items: center; }
+h3 { margin: 0.75rem 0 0.25rem; font-size: 0.95rem; color: #5b6b7b; }
+ul.readings { list-style: none; margin: 0; padding: 0; }
+ul.readings li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; padding: 0.5rem 0; border-top: 1px solid #e3e8ed; }
+.slot { flex: 1 1 8rem; }
+.actions { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; margin-left: auto; }
+.empty p { margin: 0; color: #5b6b7b; }
+.password-wrap { position: relative; display: flex; }
+.password-wrap input { flex: 1; padding-right: 2.75rem; }
+.password-wrap::-ms-reveal, input::-ms-reveal { display: none; } /* hide Edge's own reveal icon */
+button.eye { position: absolute; right: 0.25rem; top: 50%; transform: translateY(-50%); background: none; color: #5b6b7b; padding: 0.35rem; display: flex; }
+button.eye:hover { color: #1d2733; }
+button.eye:focus-visible { outline: 2px solid #1f6feb; border-radius: 4px; }

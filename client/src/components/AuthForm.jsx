@@ -8,6 +8,7 @@ export default function AuthForm({ mode, onAuthenticated, onSwitch }) {
   const [fieldErrors, setFieldErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const change = (e) => setValues({ ...values, [e.target.name]: e.target.value });
 
@@ -27,6 +28,37 @@ export default function AuthForm({ mode, onAuthenticated, onSwitch }) {
       setBusy(false);
     }
   }
+
+  const passwordField = (
+    <label>
+      Password
+      <span className="password-wrap">
+        <input
+          name="password"
+          type={showPassword ? 'text' : 'password'}
+          value={values.password}
+          onChange={change}
+          autoComplete={isSignup ? 'new-password' : 'current-password'}
+          aria-invalid={Boolean(fieldErrors.password)}
+        />
+        <button
+          type="button"
+          className="eye"
+          onClick={() => setShowPassword(!showPassword)}
+          aria-label={showPassword ? 'Hide password' : 'Show password'}
+          aria-pressed={showPassword}
+          title={showPassword ? 'Hide password' : 'Show password'}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+            {showPassword && <line x1="3" y1="3" x2="21" y2="21" />}
+          </svg>
+        </button>
+      </span>
+      {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
+    </label>
+  );
 
   const field = (name, label, type, autoComplete) => (
     <label>
@@ -48,7 +80,7 @@ export default function AuthForm({ mode, onAuthenticated, onSwitch }) {
       <h2>{isSignup ? 'Create your account' : 'Welcome back'}</h2>
       {isSignup && field('name', 'Name', 'text', 'name')}
       {field('email', 'Email', 'email', 'email')}
-      {field('password', 'Password', 'password', isSignup ? 'new-password' : 'current-password')}
+      {passwordField}
       {isSignup && <small>At least 8 characters.</small>}
       {formError && <p className="form-error" role="alert">{formError}</p>}
       <button type="submit" disabled={busy}>

@@ -30,7 +30,7 @@ router.post('/signup', async (req, res) => {
   if (!password) errors.password = 'Password is required.';
   else if (password.length < 8) errors.password = 'Password must be at least 8 characters.';
   else if (Buffer.byteLength(password) > 72) errors.password = 'Password must be 72 bytes or fewer.'; // bcrypt limit
-  if (Object.keys(errors).length) return res.status(400).json({ error: 'Please fix the highlighted fields.', fields: errors });
+  if (Object.keys(errors).length) return res.status(400).json({ error: 'Please fill in the highlighted fields.', fields: errors });
 
   const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
   try {

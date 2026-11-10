@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from './api.js';
 import AuthForm from './components/AuthForm.jsx';
+import ReadingsPage from './components/ReadingsPage.jsx';
 
 export default function App() {
   // undefined = still checking for a session, null = signed out, object = signed in
@@ -27,12 +28,13 @@ export default function App() {
       <h1>Sweety</h1>
       <p className="tagline">Blood glucose tracker</p>
       {user ? (
-        <div className="card">
-          <h2>Hello, {user.name}</h2>
-          <p>You are signed in as {user.email}.</p>
-          <p>Reading screens arrive in Phase 3.</p>
-          <button onClick={logout}>Log out</button>
-        </div>
+        <>
+          <div className="topbar">
+            <span>Signed in as <strong>{user.name}</strong></span>
+            <button className="secondary" onClick={logout}>Log out</button>
+          </div>
+          <ReadingsPage />
+        </>
       ) : (
         <AuthForm
           key={mode}
