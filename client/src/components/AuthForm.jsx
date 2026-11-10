@@ -40,6 +40,7 @@ export default function AuthForm({ mode, onAuthenticated, onSwitch }) {
           onChange={change}
           autoComplete={isSignup ? 'new-password' : 'current-password'}
           aria-invalid={Boolean(fieldErrors.password)}
+          aria-describedby={[fieldErrors.password && 'password-error', isSignup && 'password-hint'].filter(Boolean).join(' ') || undefined}
         />
         <button
           type="button"
@@ -56,7 +57,7 @@ export default function AuthForm({ mode, onAuthenticated, onSwitch }) {
           </svg>
         </button>
       </span>
-      {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
+      {fieldErrors.password && <span className="field-error" id="password-error">{fieldErrors.password}</span>}
     </label>
   );
 
@@ -70,21 +71,30 @@ export default function AuthForm({ mode, onAuthenticated, onSwitch }) {
         onChange={change}
         autoComplete={autoComplete}
         aria-invalid={Boolean(fieldErrors[name])}
+        aria-describedby={fieldErrors[name] ? `${name}-error` : undefined}
       />
-      {fieldErrors[name] && <span className="field-error">{fieldErrors[name]}</span>}
+      {fieldErrors[name] && <span className="field-error" id={`${name}-error`}>{fieldErrors[name]}</span>}
     </label>
   );
 
   return (
-    <form className="card" onSubmit={submit} noValidate>
-      <h2>{isSignup ? 'Create your account' : 'Welcome back'}</h2>
+    <form className="card auth-card" onSubmit={submit} noValidate aria-busy={busy}>
+      <div>
+        <h2>{isSignup ? 'Create your account' : 'Welcome back'}</h2>
+        <p className="subtitle">
+          {isSignup ? 'Start tracking your glucose readings.' : 'Log in to view your glucose readings.'}
+        </p>
+      </div>
       {isSignup && field('name', 'Name', 'text', 'name')}
       {field('email', 'Email', 'email', 'email')}
-      {passwordField}
-      {isSignup && <small>At least 8 characters.</small>}
+      <div className="field-group">
+        {passwordField}
+        {isSignup && <small id="password-hint">At least 8 characters.</small>}
+      </div>
       {formError && <p className="form-error" role="alert">{formError}</p>}
-      <button type="submit" disabled={busy}>
-        {busy ? 'Please wait...' : isSignup ? 'Sign up' : 'Log in'}
+      <button type="submit" className="submit" disabled={busy}>
+        {busy && <span className="spinner" aria-hidden="true" />}
+        {busy ? (isSignup ? 'Creating account...' : 'Logging in...') : isSignup ? 'Sign up' : 'Log in'}
       </button>
       <p className="switch">
         {isSignup ? 'Already have an account?' : 'New to Sweety?'}{' '}
