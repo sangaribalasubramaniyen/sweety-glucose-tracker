@@ -1,21 +1,46 @@
 import { useEffect, useState } from 'react';
+import { api } from './api.js';
+import AuthForm from './components/AuthForm.jsx';
 
-// Phase 1 placeholder: proves the React app can reach the API and database.
 export default function App() {
-  const [health, setHealth] = useState('checking...');
+  // undefined = still checking for a session, null = signed out, object = signed in
+  const [user, setUser] = useState(undefined);
+  const [mode, setMode] = useState('login');
 
+  // On every page load, ask the server who we are (the cookie is the proof).
   useEffect(() => {
-    fetch('/api/health')
-      .then((r) => r.json())
-      .then((d) => setHealth(`API: ${d.status}, database: ${d.database}`))
-      .catch(() => setHealth('API unreachable'));
+    api('/auth/me')
+      .then((d) => setUser(d.user))
+      .catch(() => setUser(null));
   }, []);
 
+  async function logout() {
+    await api('/auth/logout', { method: 'POST' });
+    setUser(null);
+    setMode('login');
+  }
+
+  if (user === undefined) return <main><p>Loading...</p></main>;
+
   return (
-    <main style={{ fontFamily: 'sans-serif', maxWidth: 480, margin: '4rem auto' }}>
+    <main>
       <h1>Sweety</h1>
-      <p>Blood glucose tracker</p>
-      <p>{health}</p>
+      <p className="tagline">Blood glucose tracker</p>
+      {user ? (
+        <div className="card">
+          <h2>Hello, {user.name}</h2>
+          <p>You are signed in as {user.email}.</p>
+          <p>Reading screens arrive in Phase 3.</p>
+          <button onClick={logout}>Log out</button>
+        </div>
+      ) : (
+        <AuthForm
+          key={mode}
+          mode={mode}
+          onAuthenticated={setUser}
+          onSwitch={() => setMode(mode === 'login' ? 'signup' : 'login')}
+        />
+      )}
     </main>
   );
 }
