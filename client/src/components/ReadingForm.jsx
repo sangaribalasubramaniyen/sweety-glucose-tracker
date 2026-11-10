@@ -13,20 +13,28 @@ export default function ReadingForm({ today, editing, onSaved, onCancel }) {
   const [fieldErrors, setFieldErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [success, setSuccess] = useState('');
 
-  const change = (e) => setValues({ ...values, [e.target.name]: e.target.value });
+  const change = (e) => {
+    setSuccess(''); // the confirmation only applies until the user starts another entry
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
 
   async function submit(e) {
     e.preventDefault();
     setBusy(true);
+    setSuccess('');
     setFormError('');
     setFieldErrors({});
     try {
       const path = editing ? `/readings/${editing.id}` : '/readings';
       const { reading } = await api(path, { method: editing ? 'PUT' : 'POST', body: values });
       // After adding, keep the date (handy for entering several slots) but clear the rest.
-      if (!editing) setValues({ ...values, slot: '', value: '' });
-      onSaved(reading.date);
+      if (!editing) {
+        setValues({ ...values, slot: '', value: '' });
+        setSuccess('Reading added');
+      }
+      onSaved(reading);
     } catch (err) {
       setFieldErrors(err.fields);
       setFormError(err.message);
@@ -64,6 +72,7 @@ export default function ReadingForm({ today, editing, onSaved, onCancel }) {
       </label>
 
       {formError && <p className="form-error" role="alert">{formError}</p>}
+      {success && <p className="form-success" role="status">{success}</p>}
 
       <div className="row">
         <button type="submit" disabled={busy}>{busy ? 'Saving...' : editing ? 'Save changes' : 'Add reading'}</button>

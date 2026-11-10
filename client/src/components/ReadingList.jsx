@@ -12,7 +12,7 @@ export function prettyDate(iso) {
 
 // Shows the readings for ONE day. The API returns them already in slot order
 // (Morning, After breakfast, After lunch, After dinner).
-export default function ReadingList({ date, readings, onEdit, onChanged }) {
+export default function ReadingList({ date, readings, highlightId, onEdit, onChanged }) {
   const [confirmingId, setConfirmingId] = useState(null);
   const [error, setError] = useState('');
 
@@ -40,7 +40,7 @@ export default function ReadingList({ date, readings, onEdit, onChanged }) {
       {error && <p className="form-error" role="alert">{error}</p>}
       <ul className="readings">
         {readings.map((r) => (
-          <li key={r.id}>
+          <li key={r.id} className={r.id === highlightId ? 'just-added' : undefined}>
             <span className="slot">{labelFor(r.slot)}</span>
             <strong>{r.value} mg/dl</strong>
             {confirmingId === r.id ? (

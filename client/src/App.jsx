@@ -27,7 +27,7 @@ export default function App() {
   if (user === undefined) return <main><p>Loading...</p></main>;
 
   return (
-    <main className={user && tab === 'reports' ? 'wide' : undefined}>
+    <main className={user ? 'wide' : undefined}>
       <h1>Sweety</h1>
       <p className="tagline">Blood glucose tracker</p>
       {user ? (
