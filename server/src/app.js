@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const pool = require('./db');
 const authRoutes = require('./routes/auth');
 const readingRoutes = require('./routes/readings');
+const reportRoutes = require('./routes/reports');
 
 const app = express();
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173', credentials: true }));
@@ -26,6 +27,7 @@ app.get('/api/health', async (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/readings', readingRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.use('/api', (req, res) => res.status(404).json({ error: 'Not found.' }));
 
