@@ -40,4 +40,11 @@ function buildStats({ count, highest, lowest, total }) {
   return { count, highest, lowest, average: roundedAverage(total, count) };
 }
 
-module.exports = { getReportRanges, roundedAverage, buildStats };
+// Turns per-day SQL rows ({ date, total, count }, one row per day that HAS readings,
+// already ordered by date) into chart points. Days without readings simply have no point,
+// so nothing is ever plotted as zero. Each average uses the same rounding as the reports.
+function buildTrend(rows) {
+  return rows.map(({ date, total, count }) => ({ date, average: roundedAverage(total, count) }));
+}
+
+module.exports = { getReportRanges, roundedAverage, buildStats, buildTrend };

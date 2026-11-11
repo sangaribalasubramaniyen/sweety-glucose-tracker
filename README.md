@@ -22,6 +22,12 @@ database requirement is PostgreSQL, so PostgreSQL is used throughout (no MongoDB
   and one reading per user, date and slot (enforced by a database constraint).
 - Reports for a selected date: **Daily**, **Month to date**, **Previous month** - each with
   reading count, highest, lowest and average (one decimal), and a friendly empty state.
+- **Month-to-date glucose trend** (bonus): a line chart under the reports. It plots one point for
+  each day that has readings, from the 1st of the selected month through the selected date, at
+  that day's average in mg/dL (one decimal; hover or tap a point to see the date and average).
+  Days without readings are left out, never drawn as zero, and readings from the previous month or
+  after the selected date are not included. With no readings it shows "No readings to chart for this period."
+  Built with [Recharts](https://recharts.org).
 - Every reading and report query is scoped to the signed-in user.
 
 ## Prerequisites
@@ -152,6 +158,7 @@ All routes except signup and login need a signed-in session.
 | `PUT /api/readings/:id`          | edit a reading                                       |
 | `DELETE /api/readings/:id`       | delete a reading                                     |
 | `GET /api/reports?date=`         | daily, month-to-date and previous-month reports (default: today) |
+| `GET /api/reports/trend?date=`   | per-day average points for the trend chart, 1st of the month through the date |
 
 ## Time zone
 

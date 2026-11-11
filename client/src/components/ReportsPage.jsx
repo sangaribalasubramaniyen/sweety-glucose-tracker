@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api.js';
 import { SLOTS } from '../slots.js';
 import { prettyDate } from './ReadingList.jsx';
+import TrendChart from './TrendChart.jsx';
 
 const labelFor = (key) => SLOTS.find((s) => s.key === key)?.label ?? key;
 
@@ -54,7 +55,10 @@ export default function ReportsPage() {
   // No date -> the server answers for today in the app time zone.
   const load = useCallback(async (date) => {
     try {
-      setData(await api(date ? `/reports?date=${date}` : '/reports'));
+      const query = date ? `?date=${date}` : '';
+      // The reports and the chart data are fetched together, so they always describe the same date.
+      const [report, trend] = await Promise.all([api(`/reports${query}`), api(`/reports/trend${query}`)]);
+      setData({ ...report, trend });
       setError('');
     } catch (err) {
       setError(err.message);
@@ -118,6 +122,8 @@ export default function ReportsPage() {
           emptyText={`No readings in ${monthName(previousMonth.from)}.`}
         />
       </div>
+
+      <TrendChart points={data.trend.points} from={data.trend.from} to={data.trend.to} />
     </>
   );
 }

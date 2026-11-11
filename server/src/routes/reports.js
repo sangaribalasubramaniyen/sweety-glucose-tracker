@@ -3,7 +3,7 @@ const pool = require('../db');
 const requireAuth = require('../middleware/requireAuth');
 const { checkDate } = require('../validation');
 const { todayString } = require('../today');
-const { getReportRanges, buildStats } = require('../reports');
+const { getReportRanges, buildStats, buildTrend } = require('../reports');
 
 const router = express.Router();
 router.use(requireAuth);
@@ -50,6 +50,28 @@ router.get('/', async (req, res) => {
     monthToDate: { ...ranges.monthToDate, stats: monthToDate },
     previousMonth: { ...ranges.previousMonth, stats: previousMonth },
   });
+});
+
+// GET /api/reports/trend?date=YYYY-MM-DD  (defaults to today in APP_TIMEZONE)
+// One point per day that has readings, from the first day of the selected month through the
+// selected date (inclusive): that day's average glucose, rounded to one decimal.
+// Same sign-in requirement, date rules and per-user scoping as the reports above.
+router.get('/trend', async (req, res) => {
+  const today = todayString();
+  const date = req.query.date ?? today;
+  const dateError = checkDate(date, today);
+  if (dateError) return res.status(400).json({ error: dateError, fields: { date: dateError } });
+
+  const { from, to } = getReportRanges(date).monthToDate;
+  const { rows } = await pool.query(
+    `SELECT reading_date AS date, count(*)::int AS count, sum(value)::int AS total
+       FROM readings
+      WHERE user_id = $1 AND reading_date BETWEEN $2 AND $3
+      GROUP BY reading_date
+      ORDER BY reading_date`,
+    [req.user.id, from, to]
+  );
+  res.json({ date, from, to, points: buildTrend(rows) });
 });
 
 module.exports = router;
