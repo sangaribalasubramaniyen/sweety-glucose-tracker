@@ -40,4 +40,4 @@ async function signUp(label) {
   return { cookie: res.cookie, user: res.body.user };
 }
 
-module.exports = { call, signUp, startServer, stopServer, email, PASSWORD };
+module.exports = { call, signUp, startServer, stopServer, email, PASSWORD, RUN };
