@@ -213,6 +213,10 @@ To use a different zone, set e.g. `APP_TIMEZONE=America/New_York` in `.env` and 
 
 ![Reports tab](docs/screenshots/reports-desktop.png)
 
+**Month-to-date glucose trend** - one point per day with readings (that day's average in mg/dL), from the 1st of the month through the selected date:
+
+![Month-to-date glucose trend](docs/screenshots/glucose-trend.png)
+
 **Log in:**
 
 ![Log in screen](docs/screenshots/login.png)
